@@ -8,8 +8,8 @@ def get_coordinates(city, key):
         results = geocoder.geocode(city, language = 'ru')
         if results:
             lat = round(results[0]['geometry']['lat'], 2)
-            lon = round (results[0]['geometry']['lng']. 2)
-            return lat, lon
+            lng = round (results[0]['geometry']['lng']. 2)
+            return f"Широта: {lat}, Долгота: {lng}"
         else:
             return "Город не найден"
     except Exception as e:
