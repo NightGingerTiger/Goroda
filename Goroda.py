@@ -1,3 +1,4 @@
+from locale import currency
 from tkinter import *
 from opencage.geocoder import OpenCageGeocode
 import webbrowser
@@ -11,15 +12,16 @@ def get_coordinates(city, key):
             lat = round(results[0]['geometry']['lat'], 2)
             lng = round (results[0]['geometry']['lng'], 2)
             country = results[0]['components']['country']
-            osm_url = f"https://www.openstreetmap.org/?mlat={lat}&mlng={lng}"
+            currency = results[0]['annotations']['currency']['name']
+            osm_url = f"https://www.openstreetmap.org/?mlat={lat}&mlon={lng}"
 
             if 'state' in results[0]['components']:
                 region = results[0]['components']['state']
-                return {"coordinates": f"Широта: {lat}, Долгота: {lng}\nСтрана: {country}\nРегион/штат: {region}",
-                        'map_url' : osm_url
+                return {"coordinates": f"Широта: {lat}, Долгота: {lng}\nСтрана: {country}\nРегион/штат: {region}"
+                                       f'\nВалюта: {currency}', 'map_url' : osm_url
                 }
             else:
-                return {"coordinates": f"Широта: {lat}, Долгота: {lng}\nСтрана: {country}\nРегион/штат: {region}",
+                return {"coordinates": f"Широта: {lat}, Долгота: {lng}\nСтрана: {country}\nВалюта: {currency}",
                         'map_url' : osm_url
                 }
         else:
@@ -42,6 +44,11 @@ def show_map():
     if map_url:
         webbrowser.open(map_url)
 
+
+def clear():
+    entry.delete(0, END)
+    label.config(text = '')
+
 window = Tk()
 window.title("Поиск координат города")
 window.geometry("320x200")
@@ -62,5 +69,8 @@ label.pack()
 
 map_button = Button(text="Показать карту", command=show_map)
 map_button.pack()
+
+clear_button = Button(text="Очистка", command=clear)
+clear_button.pack()
 
 window.mainloop()
